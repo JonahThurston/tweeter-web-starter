@@ -4,14 +4,14 @@ import Post from "./Post";
 import useUserNavigation from "../userInfo/userNavigationHook";
 
 interface Props {
-    status: Status
+  status: Status;
 }
 
 const StatusItem = (props: Props) => {
   const { navigateToUser } = useUserNavigation();
 
   return (
-      <div className="col bg-light mx-0 px-0">
+    <div className="col bg-light mx-0 px-0">
       <div className="container px-0">
         <div className="row mx-0 px-0">
           <div className="col-auto p-3">
