@@ -4,8 +4,9 @@ import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
 import React from "react";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View {
   setImageUrl: (newUrl: string) => void;
   updateUserInfo: (
     currentUser: User,
@@ -13,19 +14,17 @@ export interface RegisterView {
     authToken: AuthToken,
     remember: boolean
   ) => void;
-  displayErrorMessage: (message: string) => void;
   navigate: NavigateFunction;
   setImageBytes: (bytesToSet: Uint8Array) => void;
   setImageFileExtension: (extenstionToSet: string) => void;
 }
 
-export class RegisterPresenter {
-  private view: RegisterView;
+export class RegisterPresenter extends Presenter<RegisterView> {
   private userService: UserService;
   private _isLoading = false;
 
   public constructor(view: RegisterView) {
-    this.view = view;
+    super(view);
     this.userService = new UserService();
   }
 
@@ -131,7 +130,7 @@ export class RegisterPresenter {
     imageFileExtension: string,
     rememberMe: boolean
   ) {
-    try {
+    this.doFailureReportingOperation(async () => {
       this._isLoading = true;
 
       const [user, authToken] = await this.userService.register(
@@ -145,13 +144,9 @@ export class RegisterPresenter {
 
       this.view.updateUserInfo(user, user, authToken, rememberMe);
       this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this._isLoading = false;
-    }
+    }, "register user");
+    //FINALLY
+    this._isLoading = false;
   }
 
   public get isLoading() {

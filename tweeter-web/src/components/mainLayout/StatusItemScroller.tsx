@@ -7,7 +7,7 @@ import useUserInfo from "../userInfo/userInfoHook";
 import {
   StatusItemPresenter,
   StatusItemView,
-} from "../../presenters/StatusItemPresenters/StatusItemPresenter";
+} from "../../presenters/PagedPresenters/StatusItemPresenters/StatusItemPresenter";
 
 interface Props {
   presenterGenerator: (view: StatusItemView) => StatusItemPresenter;

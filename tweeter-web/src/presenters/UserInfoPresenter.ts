@@ -1,18 +1,10 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../ModelService/FollowService";
+import { InfoMessageView, Presenter } from "./Presenter";
 
-export interface UserInfoView {
-  displayErrorMessage: (message: string) => void;
-  displayInfoMessage: (
-    message: string,
-    duration: number,
-    bootstrapClasses?: string
-  ) => void;
-  clearLastInfoMessage: () => void;
-}
+export interface UserInfoView extends InfoMessageView {}
 
-export class UserInfoPresenter {
-  private view: UserInfoView;
+export class UserInfoPresenter extends Presenter<UserInfoView> {
   private followService: FollowService;
   private _isFollower = false;
   private _followeeCount = -1;
@@ -20,7 +12,7 @@ export class UserInfoPresenter {
   private _isLoading = false;
 
   public constructor(view: UserInfoView) {
-    this.view = view;
+    super(view);
     this.followService = new FollowService();
   }
 
@@ -31,7 +23,7 @@ export class UserInfoPresenter {
   ): Promise<void> {
     event.preventDefault();
 
-    try {
+    this.doFailureReportingOperation(async () => {
       this._isLoading = true;
       this.view.displayInfoMessage(`Unfollowing ${displayedUser.name}...`, 0);
 
@@ -43,14 +35,10 @@ export class UserInfoPresenter {
       this._isFollower = false;
       this._followerCount = followerCount;
       this._followeeCount = followeeCount;
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to unfollow user because of exception: ${error}`
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this._isLoading = false;
-    }
+    }, "unfollow user");
+    //FINALLY
+    this.view.clearLastInfoMessage();
+    this._isLoading = false;
   }
 
   public async followDisplayedUser(
@@ -60,7 +48,7 @@ export class UserInfoPresenter {
   ): Promise<void> {
     event.preventDefault();
 
-    try {
+    this.doFailureReportingOperation(async () => {
       this._isLoading = true;
       this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
 
@@ -72,40 +60,28 @@ export class UserInfoPresenter {
       this._isFollower = true;
       this._followerCount = followerCount;
       this._followeeCount = followeeCount;
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to follow user because of exception: ${error}`
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this._isLoading = false;
-    }
+    }, "follow user");
+    //Finally
+    this.view.clearLastInfoMessage();
+    this._isLoading = false;
   }
 
   public async setNumbFollowers(authToken: AuthToken, displayedUser: User) {
-    try {
+    this.doFailureReportingOperation(async () => {
       this._followerCount = await this.followService.getFollowerCount(
         authToken,
         displayedUser
       );
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to get followers count because of exception: ${error}`
-      );
-    }
+    }, "get followers count");
   }
 
   public async setNumbFollowees(authToken: AuthToken, displayedUser: User) {
-    try {
+    this.doFailureReportingOperation(async () => {
       this._followeeCount = await this.followService.getFolloweeCount(
         authToken,
         displayedUser
       );
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to get followees count because of exception: ${error}`
-      );
-    }
+    }, "get followees count");
   }
 
   public async setIsFollowerStatus(
@@ -113,7 +89,7 @@ export class UserInfoPresenter {
     currentUser: User,
     displayedUser: User
   ) {
-    try {
+    this.doFailureReportingOperation(async () => {
       if (currentUser === displayedUser) {
         this._isFollower = false;
       } else {
@@ -123,11 +99,7 @@ export class UserInfoPresenter {
           displayedUser!
         );
       }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to determine follower status because of exception: ${error}`
-      );
-    }
+    }, "determine follower status");
   }
 
   public get isLoading() {

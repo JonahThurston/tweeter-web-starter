@@ -1,26 +1,25 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../ModelService/UserService";
 import { NavigateFunction } from "react-router-dom";
+import { Presenter, View } from "./Presenter";
 
-export interface LoginView {
+export interface LoginView extends View {
   updateUserInfo: (
     currentUser: User,
     displayeduser: User | null,
     authToken: AuthToken,
     remember: boolean
   ) => void;
-  displayErrorMessage: (message: string) => void;
   navigate: NavigateFunction;
 }
 
-export class LoginPresenter {
+export class LoginPresenter extends Presenter<LoginView> {
   private _isLoading = false;
   private userService: UserService;
-  private view: LoginView;
   private originalUrl: string | undefined;
 
   public constructor(view: LoginView, originalUrl: string | undefined) {
-    this.view = view;
+    super(view);
     this.userService = new UserService();
     this.originalUrl = originalUrl;
   }
@@ -47,7 +46,7 @@ export class LoginPresenter {
   }
 
   public async doLogin(alias: string, password: string, rememberMe: boolean) {
-    try {
+    this.doFailureReportingOperation(async () => {
       this._isLoading = true;
 
       const [user, authToken] = await this.userService.login(alias, password);
@@ -59,13 +58,9 @@ export class LoginPresenter {
       } else {
         this.view.navigate("/");
       }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      this._isLoading = false;
-    }
+    }, "log user in");
+    //THIS LINE USED TO BE IN A FINALLY BLOCK IS THAT CHILL????
+    this._isLoading = false;
   }
 
   public get isLoading() {

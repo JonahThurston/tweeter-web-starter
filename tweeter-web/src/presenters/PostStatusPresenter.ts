@@ -1,20 +1,17 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../ModelService/StatusService";
+import { InfoMessageView, Presenter } from "./Presenter";
 
-export interface PostStatusView {
-  displayErrorMessage: (message: string) => void;
-  displayInfoMessage: (message: string, duration: number) => void;
-  clearLastInfoMessage: () => void;
+export interface PostStatusView extends InfoMessageView {
   clearPost: (event?: React.MouseEvent) => void;
 }
 
-export class PostStatusPresenter {
+export class PostStatusPresenter extends Presenter<PostStatusView> {
   private statusService: StatusService;
-  private _view: PostStatusView;
   private _isLoading = false;
 
   public constructor(view: PostStatusView) {
-    this._view = view;
+    super(view);
     this.statusService = new StatusService();
   }
 
@@ -26,24 +23,21 @@ export class PostStatusPresenter {
   ) {
     event.preventDefault();
 
-    try {
+    this.doFailureReportingOperation(async () => {
       this._isLoading = true;
-      this._view.displayInfoMessage("Posting status...", 0);
+      this.view.displayInfoMessage("Posting status...", 0);
 
       const status = new Status(post, currentUser, Date.now());
 
       await this.statusService.postStatus(authToken, status);
 
-      this._view.clearPost();
-      this._view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    } finally {
-      this._view.clearLastInfoMessage();
-      this._isLoading = false;
-    }
+      this.view.clearPost();
+      this.view.displayInfoMessage("Status posted!", 2000);
+    }, "post the status");
+
+    //FINALLY
+    this.view.clearLastInfoMessage();
+    this._isLoading = false;
   }
 
   public checkButtonStatus(
