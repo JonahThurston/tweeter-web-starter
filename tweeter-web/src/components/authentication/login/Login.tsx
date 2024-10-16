@@ -6,7 +6,8 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/userInfoHook";
-import { LoginPresenter, LoginView } from "../../../presenters/LoginPresenter";
+import { LoginPresenter } from "../../../presenters/AuthenticationPresenters/LoginPresenter";
+import { AuthenticationView } from "../../../presenters/AuthenticationPresenters/AuthenticationPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -22,7 +23,7 @@ const Login = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
-    return !alias || !password;
+    return presenter.checkRequiredFields([alias, password]);
   };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -33,7 +34,7 @@ const Login = (props: Props) => {
     presenter.doLogin(alias, password, rememberMe);
   };
 
-  const listener: LoginView = {
+  const listener: AuthenticationView = {
     updateUserInfo: updateUserInfo,
     displayErrorMessage: displayErrorMessage,
     navigate: navigate,

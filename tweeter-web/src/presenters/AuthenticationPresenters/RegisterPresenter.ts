@@ -1,51 +1,18 @@
-import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../ModelService/UserService";
-import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
 import { ChangeEvent } from "react";
 import React from "react";
-import { Presenter, View } from "./Presenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface RegisterView extends View {
+export interface RegisterView extends AuthenticationView {
   setImageUrl: (newUrl: string) => void;
-  updateUserInfo: (
-    currentUser: User,
-    displayeduser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) => void;
-  navigate: NavigateFunction;
   setImageBytes: (bytesToSet: Uint8Array) => void;
   setImageFileExtension: (extenstionToSet: string) => void;
 }
 
-export class RegisterPresenter extends Presenter<RegisterView> {
-  private userService: UserService;
-  private _isLoading = false;
-
-  public constructor(view: RegisterView) {
-    super(view);
-    this.userService = new UserService();
-  }
-
-  public checkSubmitButtonStatus(
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    imageUrl: string,
-    imageFileExtension: string
-  ): boolean {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
-    );
-  }
-
+export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
   public registerOnEnter(
     event: React.KeyboardEvent<HTMLElement>,
     firstName: string,
@@ -57,27 +24,75 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     imageBytes: Uint8Array,
     rememberMe: boolean
   ) {
-    if (
-      event.key == "Enter" &&
-      !this.checkSubmitButtonStatus(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageUrl,
-        imageFileExtension
-      )
-    ) {
-      this.doRegister(
+    const requiredFields = [
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageUrl,
+      imageFileExtension,
+    ];
+    this.onEnterFunction(
+      event,
+      requiredFields,
+      this.getSubmissionFunction(
         firstName,
         lastName,
         alias,
         password,
         imageBytes,
-        imageFileExtension,
-        rememberMe
+        imageFileExtension
+      ),
+      rememberMe,
+      undefined
+    );
+  }
+
+  public async doRegister(
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageBytes: Uint8Array,
+    imageFileExtension: string,
+    rememberMe: boolean
+  ) {
+    this.doFailureReportingOperation(async () => {
+      this.doSubmit(
+        this.getSubmissionFunction(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageBytes,
+          imageFileExtension
+        ),
+        rememberMe,
+        undefined
       );
-    }
+    }, "register user");
+    //FINALLY
+    this._isLoading = false;
+  }
+
+  private getSubmissionFunction(
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageBytes: Uint8Array,
+    imageFileExtension: string
+  ) {
+    return async () => {
+      return this.userService.register(
+        firstName,
+        lastName,
+        alias,
+        password,
+        imageBytes,
+        imageFileExtension
+      );
+    };
   }
 
   public handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -119,37 +134,5 @@ export class RegisterPresenter extends Presenter<RegisterView> {
 
   public getFileExtension(file: File): string | undefined {
     return file.name.split(".").pop();
-  }
-
-  public async doRegister(
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    imageBytes: Uint8Array,
-    imageFileExtension: string,
-    rememberMe: boolean
-  ) {
-    this.doFailureReportingOperation(async () => {
-      this._isLoading = true;
-
-      const [user, authToken] = await this.userService.register(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension
-      );
-
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate("/");
-    }, "register user");
-    //FINALLY
-    this._isLoading = false;
-  }
-
-  public get isLoading() {
-    return this._isLoading;
   }
 }

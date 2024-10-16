@@ -9,7 +9,7 @@ import useUserInfo from "../../userInfo/userInfoHook";
 import {
   RegisterPresenter,
   RegisterView,
-} from "../../../presenters/RegisterPresenter";
+} from "../../../presenters/AuthenticationPresenters/RegisterPresenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -26,14 +26,14 @@ const Register = () => {
   const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
-    return presenter.checkSubmitButtonStatus(
+    return presenter.checkRequiredFields([
       firstName,
       lastName,
       alias,
       password,
       imageUrl,
-      imageFileExtension
-    );
+      imageFileExtension,
+    ]);
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
