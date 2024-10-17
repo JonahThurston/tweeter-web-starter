@@ -3,10 +3,6 @@ import { View } from "../../Presenter";
 import { PagedItemPresenter } from "../PagedItemPresenter";
 import { StatusService } from "../../../ModelService/StatusService";
 
-export interface StatusItemView extends View {
-  addItems: (newItems: Status[]) => void;
-}
-
 export abstract class StatusItemPresenter extends PagedItemPresenter<
   Status,
   StatusService
