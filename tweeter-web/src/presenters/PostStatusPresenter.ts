@@ -23,21 +23,24 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
   ) {
     event.preventDefault();
 
-    this.doFailureReportingOperation(async () => {
-      this._isLoading = true;
-      this.view.displayInfoMessage("Posting status...", 0);
+    this.doFailureReportingWithFinally(
+      async () => {
+        this._isLoading = true;
+        this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(post, currentUser, Date.now());
+        const status = new Status(post, currentUser, Date.now());
 
-      await this.statusService.postStatus(authToken, status);
+        await this.statusService.postStatus(authToken, status);
 
-      this.view.clearPost();
-      this.view.displayInfoMessage("Status posted!", 2000);
-    }, "post the status");
-
-    //FINALLY
-    this.view.clearLastInfoMessage();
-    this._isLoading = false;
+        this.view.clearPost();
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      "post the status",
+      () => {
+        this.view.clearLastInfoMessage();
+        this._isLoading = false;
+      }
+    );
   }
 
   public checkButtonStatus(

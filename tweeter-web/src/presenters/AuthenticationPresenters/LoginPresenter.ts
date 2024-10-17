@@ -32,15 +32,19 @@ export class LoginPresenter extends AuthenticationPresenter<AuthenticationView> 
   }
 
   public async doLogin(alias: string, password: string, rememberMe: boolean) {
-    this.doFailureReportingOperation(async () => {
-      this.doSubmit(
-        this.getSubmissionFunction(alias, password),
-        rememberMe,
-        this.originalUrl
-      );
-    }, "log user in");
-    //THIS LINE USED TO BE IN A FINALLY BLOCK IS THAT CHILL????
-    this._isLoading = false;
+    this.doFailureReportingWithFinally(
+      async () => {
+        this.doSubmit(
+          this.getSubmissionFunction(alias, password),
+          rememberMe,
+          this.originalUrl
+        );
+      },
+      "log user in",
+      () => {
+        this._isLoading = false;
+      }
+    );
   }
 
   private getSubmissionFunction(alias: string, password: string) {

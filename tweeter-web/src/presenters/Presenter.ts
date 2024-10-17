@@ -30,4 +30,20 @@ export class Presenter<V extends View> {
       );
     }
   }
+
+  protected async doFailureReportingWithFinally(
+    operation: () => Promise<void>,
+    operationDescription: string,
+    finallyOperation: () => void
+  ): Promise<void> {
+    try {
+      await operation();
+    } catch (error) {
+      this.view.displayErrorMessage(
+        `Failed to ${operationDescription} because of exception: ${error}`
+      );
+    } finally {
+      finallyOperation();
+    }
+  }
 }

@@ -57,22 +57,26 @@ export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
     imageFileExtension: string,
     rememberMe: boolean
   ) {
-    this.doFailureReportingOperation(async () => {
-      this.doSubmit(
-        this.getSubmissionFunction(
-          firstName,
-          lastName,
-          alias,
-          password,
-          imageBytes,
-          imageFileExtension
-        ),
-        rememberMe,
-        undefined
-      );
-    }, "register user");
-    //FINALLY
-    this._isLoading = false;
+    this.doFailureReportingWithFinally(
+      async () => {
+        this.doSubmit(
+          this.getSubmissionFunction(
+            firstName,
+            lastName,
+            alias,
+            password,
+            imageBytes,
+            imageFileExtension
+          ),
+          rememberMe,
+          undefined
+        );
+      },
+      "register user",
+      () => {
+        this._isLoading = false;
+      }
+    );
   }
 
   private getSubmissionFunction(
