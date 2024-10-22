@@ -1,4 +1,12 @@
-import { anything, instance, mock, spy, verify, when } from "ts-mockito";
+import {
+  anything,
+  capture,
+  instance,
+  mock,
+  spy,
+  verify,
+  when,
+} from "ts-mockito";
 import {
   PostStatusPresenter,
   PostStatusView,
@@ -41,17 +49,49 @@ describe("PostStatusPresenter", () => {
       mockEventInstance,
       user,
       authToken,
-      anything()
+      "Post Test"
     );
+
+    verify(mockPostStatusView.displayErrorMessage(anything())).never();
 
     verify(
       mockPostStatusView.displayInfoMessage("Posting status...", 0)
     ).once();
   });
 
-  it("calls postStatus on the post status service with the correct status string and auth token", async () => {});
+  it("calls postStatus on the post status service with the correct status string and auth token", async () => {
+    await postStatusPresenter.submitPost(
+      mockEventInstance,
+      user,
+      authToken,
+      "PostTest"
+    );
 
-  it("tells the view to clear the last info message, clear the post, and display a status posted message, when posting a status is successfull", async () => {});
+    verify(mockStatusService.postStatus(authToken, anything())).once();
+
+    let [capturedAuthToken, capturedStatus] = capture(
+      mockStatusService.postStatus
+    ).last();
+    expect(capturedAuthToken).toEqual(authToken);
+    expect(capturedStatus.post).toEqual("PostTest");
+  });
+
+  it("tells the view to clear the last info message, clear the post, and display a status posted message, when posting a status is successfull", async () => {
+    await postStatusPresenter.submitPost(
+      mockEventInstance,
+      user,
+      authToken,
+      "post test"
+    );
+
+    verify(mockPostStatusView.displayErrorMessage(anything())).never();
+
+    verify(mockPostStatusView.clearLastInfoMessage()).once();
+    verify(mockPostStatusView.clearPost()).once();
+    verify(
+      mockPostStatusView.displayInfoMessage("Status posted!", 2000)
+    ).once();
+  });
 
   it(" tells the view to display an error message and clear the last info message and does not tell it to clear the post or display a status posted message", async () => {});
 });
