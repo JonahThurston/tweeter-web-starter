@@ -41,7 +41,9 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
       },
       "post the status",
       () => {
+        //console.log("CALLING clearLastInfoMessage");
         this.view.clearLastInfoMessage();
+        //console.log("DONE WITH clearLastInfoMessage");
         this._isLoading = false;
       }
     );
