@@ -4,7 +4,7 @@ import {
   PagedItemView,
 } from "../../presenters/PagedPresenters/PagedItemPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfo from "../userInfo/userInfoHook";
+import useUserInfo from "../userInfo/UserInfoHook";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Props<T, U> {

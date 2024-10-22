@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
-import useUserInfo from "../../userInfo/userInfoHook";
+import useUserInfo from "../../userInfo/UserInfoHook";
 import {
   RegisterPresenter,
   RegisterView,

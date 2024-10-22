@@ -1,5 +1,5 @@
 import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfo from "./userInfoHook";
+import useUserInfo from "./UserInfoHook";
 import {
   UserNavigationPresenter,
   UserNavigationView,

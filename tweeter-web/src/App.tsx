@@ -10,7 +10,7 @@ import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
-import useUserInfo from "./components/userInfo/userInfoHook";
+import useUserInfo from "./components/userInfo/UserInfoHook";
 import { FolloweePresenter } from "./presenters/PagedPresenters/UserItemPresenters/FolloweePresenter";
 import { FollowerPresenter } from "./presenters/PagedPresenters/UserItemPresenters/FollowerPresenter";
 import { FeedPresenter } from "./presenters/PagedPresenters/StatusItemPresenters/FeedPresenter";

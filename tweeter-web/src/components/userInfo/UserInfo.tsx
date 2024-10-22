@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
-import useUserInfo from "./userInfoHook";
+import useUserInfo from "./UserInfoHook";
 import {
   UserInfoPresenter,
   UserInfoView,
