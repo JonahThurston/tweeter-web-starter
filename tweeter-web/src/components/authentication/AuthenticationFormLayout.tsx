@@ -60,6 +60,7 @@ const AuthenticationFormLayout = (props: Props) => {
 
             <button
               id="submitButton"
+              aria-label="submitButton"
               className="w-100 btn btn-lg btn-primary"
               type="button"
               disabled={props.submitButtonDisabled()}
