@@ -25,6 +25,7 @@ export type { ChangeFollowStatusRequest } from "./model/net/request/ChangeFollow
 export type { FollowCountRequest } from "./model/net/request/FollowCountRequest";
 export type { GetFollowerStatusRequest } from "./model/net/request/GetFollowerStatusRequest";
 export type { PagedStoryItemRequest } from "./model/net/request/PagedStoryItemRequest";
+export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 
 //
 //Responses

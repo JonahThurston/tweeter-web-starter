@@ -9,7 +9,9 @@ import {
   PagedStoryItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
   Status,
+  TweeterResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -219,6 +221,20 @@ export class ServerFacade {
       } else {
         return [items, response.hasMore];
       }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async postStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      TweeterResponse
+    >(request, "/post");
+
+    if (response.success) {
+      return;
     } else {
       console.error(response);
       throw new Error(response.message);
