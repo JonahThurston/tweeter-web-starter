@@ -3,4 +3,4 @@ LAMBDA_ROLE='arn:aws:iam::058264518382:role/TweeterCloneDeploymentRole'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:2'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:3'
