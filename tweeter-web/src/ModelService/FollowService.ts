@@ -11,12 +11,13 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log(lastItem);
-    console.log(
-      FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias)
-    );
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    let request: PagedUserItemRequest = {
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem ? lastItem.dto : null,
+    };
+    return await this.server.getMoreFollowers(request);
   }
 
   public async loadMoreFollowees(
