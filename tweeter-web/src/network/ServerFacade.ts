@@ -5,8 +5,11 @@ import {
   FollowCountResponse,
   GetFollowerStatusRequest,
   GetFollowerStatusResponse,
+  PagedStoryItemRequest,
+  PagedStoryItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  Status,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -161,6 +164,33 @@ export class ServerFacade {
         throw new Error(`No status found`);
       } else {
         return response.status;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async getMoreFeedItems(
+    request: PagedStoryItemRequest
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedStoryItemRequest,
+      PagedStoryItemResponse
+    >(request, "/feed/list");
+
+    // Convert the UserDto array returned by ClientCommunicator to a User array
+    const items: Status[] | null =
+      response.success && response.items
+        ? response.items.map((dto) => Status.fromDto(dto) as Status)
+        : null;
+
+    // Handle errors
+    if (response.success) {
+      if (items == null) {
+        throw new Error(`No feed items found`);
+      } else {
+        return [items, response.hasMore];
       }
     } else {
       console.error(response);
