@@ -127,4 +127,22 @@ export class ServerFacade {
       throw new Error(response.message);
     }
   }
+
+  public async getFolloweeCount(request: FollowCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      FollowCountRequest,
+      FollowCountResponse
+    >(request, "/followee/count");
+
+    if (response.success) {
+      if (response.count == null) {
+        throw new Error(`No count found`);
+      } else {
+        return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
 }
