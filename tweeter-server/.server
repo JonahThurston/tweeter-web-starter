@@ -2,5 +2,6 @@ BUCKET='tweeter-clone-lambda-deployment-bucket'
 LAMBDA_ROLE='arn:aws:iam::058264518382:role/TweeterCloneDeploymentRole'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+tweeterGetFollowers | lambda/follow/GetFollowersLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:3'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:4'
