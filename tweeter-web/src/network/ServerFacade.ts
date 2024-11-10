@@ -1,6 +1,8 @@
 import {
   ChangeFollowStatusRequest,
   ChangeFollowStatusResponse,
+  FollowCountRequest,
+  FollowCountResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -101,6 +103,24 @@ export class ServerFacade {
         throw new Error(`No followee or follower count found`);
       } else {
         return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async getFollowerCount(request: FollowCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      FollowCountRequest,
+      FollowCountResponse
+    >(request, "/follower/count");
+
+    if (response.success) {
+      if (response.count == null) {
+        throw new Error(`No count found`);
+      } else {
+        return response.count;
       }
     } else {
       console.error(response);
