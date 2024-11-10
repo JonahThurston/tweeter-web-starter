@@ -1,4 +1,6 @@
 import {
+  ChangeFollowStatusRequest,
+  ChangeFollowStatusResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -59,6 +61,26 @@ export class ServerFacade {
         throw new Error(`No followers found`);
       } else {
         return [items, response.hasMore];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async unfollow(
+    request: ChangeFollowStatusRequest
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      ChangeFollowStatusRequest,
+      ChangeFollowStatusResponse
+    >(request, "/unfollow");
+
+    if (response.success) {
+      if (response.followeeCount == null || response.followerCount == null) {
+        throw new Error(`No followee or follower count found`);
+      } else {
+        return [response.followerCount, response.followeeCount];
       }
     } else {
       console.error(response);
