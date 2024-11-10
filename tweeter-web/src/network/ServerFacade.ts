@@ -3,6 +3,8 @@ import {
   ChangeFollowStatusResponse,
   FollowCountRequest,
   FollowCountResponse,
+  GetFollowerStatusRequest,
+  GetFollowerStatusResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -139,6 +141,26 @@ export class ServerFacade {
         throw new Error(`No count found`);
       } else {
         return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async getFollowerStatus(
+    request: GetFollowerStatusRequest
+  ): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost<
+      GetFollowerStatusRequest,
+      GetFollowerStatusResponse
+    >(request, "/follower/status");
+
+    if (response.success) {
+      if (response.status == null) {
+        throw new Error(`No status found`);
+      } else {
+        return response.status;
       }
     } else {
       console.error(response);

@@ -4,6 +4,7 @@ import {
   FakeData,
   ChangeFollowStatusRequest,
   FollowCountRequest,
+  GetFollowerStatusRequest,
 } from "tweeter-shared";
 import { ServerFacade } from "../network/ServerFacade";
 import { PagedUserItemRequest } from "tweeter-shared";
@@ -90,7 +91,11 @@ export class FollowService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    let request: GetFollowerStatusRequest = {
+      token: authToken.token,
+      user: user.dto,
+      selectedUser: selectedUser,
+    };
+    return await this.server.getFollowerStatus(request);
   }
 }
