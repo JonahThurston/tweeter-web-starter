@@ -87,4 +87,24 @@ export class ServerFacade {
       throw new Error(response.message);
     }
   }
+
+  public async follow(
+    request: ChangeFollowStatusRequest
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      ChangeFollowStatusRequest,
+      ChangeFollowStatusResponse
+    >(request, "/follow");
+
+    if (response.success) {
+      if (response.followeeCount == null || response.followerCount == null) {
+        throw new Error(`No followee or follower count found`);
+      } else {
+        return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
 }
