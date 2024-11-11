@@ -15,6 +15,7 @@ import {
   PagedUserItemRequest,
   PagedUserItemResponse,
   PostStatusRequest,
+  RegisterRequest,
   SignInResponse,
   Status,
   TweeterResponse,
@@ -280,6 +281,26 @@ export class ServerFacade {
       LoginRequest,
       SignInResponse
     >(request, "/user/login");
+
+    if (response.success) {
+      const foundUser = User.fromDto(response.user);
+      const foundToken = AuthToken.fromDto(response.token);
+      if (foundUser === null || foundToken === null) {
+        throw new Error(`No user or token found`);
+      } else {
+        return [foundUser, foundToken];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async register(request: RegisterRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      SignInResponse
+    >(request, "/user/register");
 
     if (response.success) {
       const foundUser = User.fromDto(response.user);
