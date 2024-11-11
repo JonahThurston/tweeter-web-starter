@@ -11,5 +11,6 @@ tweeterGetIsFollowerStatus | lambda/follow/GetIsFollowerStatusLambda.handler
 tweeterGetFeedItems | lambda/status/GetFeedItemsLambda.handler
 tweeterGetStoryItems | lambda/status/GetStoryItemsLambda.handler
 tweeterPostStatus | lambda/status/PostStatusLambda.handler
+tweeterGetUser | lambda/user/GetUserLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:10'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-1:058264518382:layer:TweeterServerDependencies:11'
