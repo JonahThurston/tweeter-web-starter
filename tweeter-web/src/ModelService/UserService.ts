@@ -1,13 +1,21 @@
 import { Buffer } from "buffer";
-import { AuthToken, FakeData, GetUserRequest, User } from "tweeter-shared";
+import {
+  AuthToken,
+  FakeData,
+  GetUserRequest,
+  LogOutRequest,
+  User,
+} from "tweeter-shared";
 import { ServerFacade } from "../network/ServerFacade";
 
 export class UserService {
   private server: ServerFacade = new ServerFacade();
 
   public async logout(authToken: AuthToken): Promise<void> {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    let request: LogOutRequest = {
+      token: authToken.token,
+    };
+    return await this.server.logout(request);
   }
 
   public async login(

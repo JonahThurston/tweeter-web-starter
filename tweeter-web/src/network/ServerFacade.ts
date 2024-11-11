@@ -7,6 +7,7 @@ import {
   GetFollowerStatusResponse,
   GetUserRequest,
   GetUserResponse,
+  LogOutRequest,
   PagedStoryItemRequest,
   PagedStoryItemResponse,
   PagedUserItemRequest,
@@ -251,6 +252,20 @@ export class ServerFacade {
 
     if (response.success) {
       return User.fromDto(response.user);
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async logout(request: LogOutRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      LogOutRequest,
+      TweeterResponse
+    >(request, "/user/logout");
+
+    if (response.success) {
+      return;
     } else {
       console.error(response);
       throw new Error(response.message);

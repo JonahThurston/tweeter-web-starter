@@ -28,6 +28,7 @@ export type { GetFollowerStatusRequest } from "./model/net/request/GetFollowerSt
 export type { PagedStoryItemRequest } from "./model/net/request/PagedStoryItemRequest";
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 export type { GetUserRequest } from "./model/net/request/GetUserRequest";
+export type { LogOutRequest } from "./model/net/request/LogOutRequest";
 
 //
 //Responses
