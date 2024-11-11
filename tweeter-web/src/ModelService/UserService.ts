@@ -3,6 +3,7 @@ import {
   AuthToken,
   FakeData,
   GetUserRequest,
+  LoginRequest,
   LogOutRequest,
   User,
 } from "tweeter-shared";
@@ -22,14 +23,12 @@ export class UserService {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const request: LoginRequest = {
+      alias: alias,
+      password: password,
+    };
 
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
+    return await this.server.login(request);
   }
 
   public async register(

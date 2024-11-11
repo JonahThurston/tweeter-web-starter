@@ -29,6 +29,7 @@ export type { PagedStoryItemRequest } from "./model/net/request/PagedStoryItemRe
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 export type { GetUserRequest } from "./model/net/request/GetUserRequest";
 export type { LogOutRequest } from "./model/net/request/LogOutRequest";
+export type { LoginRequest } from "./model/net/request/LoginRequest";
 
 //
 //Responses
@@ -40,6 +41,7 @@ export type { FollowCountResponse } from "./model/net/response/FollowCountRespon
 export type { GetFollowerStatusResponse } from "./model/net/response/GetFollowerStatusResponse";
 export type { PagedStoryItemResponse } from "./model/net/response/PagedStoryItemResponse";
 export type { GetUserResponse } from "./model/net/response/GetUserResponse";
+export type { SignInResponse } from "./model/net/response/SignInResponse";
 
 //
 //Other

@@ -1,4 +1,5 @@
 import {
+  AuthToken,
   ChangeFollowStatusRequest,
   ChangeFollowStatusResponse,
   FollowCountRequest,
@@ -7,12 +8,14 @@ import {
   GetFollowerStatusResponse,
   GetUserRequest,
   GetUserResponse,
+  LoginRequest,
   LogOutRequest,
   PagedStoryItemRequest,
   PagedStoryItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   PostStatusRequest,
+  SignInResponse,
   Status,
   TweeterResponse,
   User,
@@ -266,6 +269,26 @@ export class ServerFacade {
 
     if (response.success) {
       return;
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async login(request: LoginRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      SignInResponse
+    >(request, "/user/login");
+
+    if (response.success) {
+      const foundUser = User.fromDto(response.user);
+      const foundToken = AuthToken.fromDto(response.token);
+      if (foundUser === null || foundToken === null) {
+        throw new Error(`No user or token found`);
+      } else {
+        return [foundUser, foundToken];
+      }
     } else {
       console.error(response);
       throw new Error(response.message);
