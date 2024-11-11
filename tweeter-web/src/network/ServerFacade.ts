@@ -5,6 +5,8 @@ import {
   FollowCountResponse,
   GetFollowerStatusRequest,
   GetFollowerStatusResponse,
+  GetUserRequest,
+  GetUserResponse,
   PagedStoryItemRequest,
   PagedStoryItemResponse,
   PagedUserItemRequest,
@@ -235,6 +237,20 @@ export class ServerFacade {
 
     if (response.success) {
       return;
+    } else {
+      console.error(response);
+      throw new Error(response.message);
+    }
+  }
+
+  public async getUser(request: GetUserRequest): Promise<User | null> {
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/user/get");
+
+    if (response.success) {
+      return User.fromDto(response.user);
     } else {
       console.error(response);
       throw new Error(response.message);
