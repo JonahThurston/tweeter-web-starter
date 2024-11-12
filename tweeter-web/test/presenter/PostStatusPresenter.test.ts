@@ -13,6 +13,7 @@ import {
 } from "../../src/presenters/PostStatusPresenter";
 import { AuthToken, User } from "tweeter-shared";
 import { StatusService } from "../../src/ModelService/StatusService";
+import "isomorphic-fetch";
 
 describe("PostStatusPresenter", () => {
   let postStatusPresenter: PostStatusPresenter;

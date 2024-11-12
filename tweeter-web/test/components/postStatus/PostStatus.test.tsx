@@ -7,6 +7,7 @@ import { anything, instance, mock, verify } from "ts-mockito";
 import { PostStatusPresenter } from "../../../src/presenters/PostStatusPresenter";
 import { AuthToken, User } from "tweeter-shared";
 import useUserInfo from "../../../src/components/userInfo/UserInfoHook";
+import "isomorphic-fetch";
 
 jest.mock("../../../src/components/userInfo/UserInfoHook", () => ({
   ...jest.requireActual("../../../src/components/userInfo/UserInfoHook"),

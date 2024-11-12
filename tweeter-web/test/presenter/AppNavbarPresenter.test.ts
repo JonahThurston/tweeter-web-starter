@@ -13,6 +13,7 @@ import {
   when,
 } from "ts-mockito";
 import { UserService } from "../../src/ModelService/UserService";
+import "isomorphic-fetch";
 
 describe("AppNavbarPresenter", () => {
   let mockAppNavbarView: AppNavbarView;
