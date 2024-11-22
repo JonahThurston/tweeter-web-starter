@@ -1,14 +1,26 @@
-import { User, FakeData, UserDto } from "tweeter-shared";
+import { UserDto } from "tweeter-shared";
+import { DaoFactory } from "../../database-access/interfaces/DaoFactory";
 
 export class FollowService {
+  private daoFactory: DaoFactory;
+
+  public constructor(factory: DaoFactory) {
+    this.daoFactory = factory;
+  }
+
   public async loadMoreFollowers(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      return await followsDao.getPageOfFollowers(lastItem, userAlias, pageSize);
+    }
   }
 
   public async loadMoreFollowees(
@@ -17,62 +29,71 @@ export class FollowService {
     pageSize: number,
     lastItem: UserDto | null
   ): Promise<[UserDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize, userAlias);
-  }
-
-  private async getFakeData(
-    lastItem: UserDto | null,
-    pageSize: number,
-    userAlias: string
-  ): Promise<[UserDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(
-      User.fromDto(lastItem),
-      pageSize,
-      userAlias
-    );
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      return await followsDao.getPageOfFollowees(lastItem, userAlias, pageSize);
+    }
   }
 
   public async unfollow(
     token: string,
     userToUnfollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    let returnedAlias = await sessionsDao.checkToken(token);
+    if (returnedAlias === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      await followsDao.deleteFollowItem(returnedAlias, userToUnfollow);
 
-    // TODO: Call the server
+      const followerCount = await this.getFollowerCount(token, userToUnfollow);
+      const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
 
-    const followerCount = await this.getFollowerCount(token, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(token, userToUnfollow);
-
-    return [followerCount, followeeCount];
+      return [followerCount, followeeCount];
+    }
   }
 
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      return await followsDao.followerCount(user);
+    }
   }
 
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      return await followsDao.followeeCount(user);
+    }
   }
 
   public async follow(
     token: string,
     userToFollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    let returnedAlias = await sessionsDao.checkToken(token);
+    if (returnedAlias === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      await followsDao.makeFollowItem(returnedAlias, userToFollow);
 
-    // TODO: Call the server
+      const followerCount = await this.getFollowerCount(token, userToFollow);
+      const followeeCount = await this.getFolloweeCount(token, userToFollow);
 
-    const followerCount = await this.getFollowerCount(token, userToFollow);
-    const followeeCount = await this.getFolloweeCount(token, userToFollow);
-
-    return [followerCount, followeeCount];
+      return [followerCount, followeeCount];
+    }
   }
 
   public async getIsFollowerStatus(
@@ -80,7 +101,12 @@ export class FollowService {
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let followsDao = this.daoFactory.getFollowsDao();
+      return await followsDao.getIsFollowerStatus(user, selectedUser);
+    }
   }
 }

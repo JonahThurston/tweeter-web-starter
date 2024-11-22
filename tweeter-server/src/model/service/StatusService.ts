@@ -1,14 +1,26 @@
-import { Status, FakeData, StatusDto } from "tweeter-shared";
+import { StatusDto } from "tweeter-shared";
+import { DaoFactory } from "../../database-access/interfaces/DaoFactory";
 
 export class StatusService {
+  private daoFactory: DaoFactory;
+
+  public constructor(factory: DaoFactory) {
+    this.daoFactory = factory;
+  }
+
   public async loadMoreFeedItems(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize);
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let feedDao = this.daoFactory.getFeedDao();
+      return await feedDao.getPageOfItems(lastItem, userAlias, pageSize);
+    }
   }
 
   public async loadMoreStoryItems(
@@ -17,26 +29,25 @@ export class StatusService {
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize);
-  }
-
-  private async getFakeData(
-    lastItem: StatusDto | null,
-    pageSize: number
-  ): Promise<[StatusDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-      Status.fromDto(lastItem),
-      pageSize
-    );
-    const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let storyDao = this.daoFactory.getStoryDao();
+      return await storyDao.getPageOfItems(lastItem, userAlias, pageSize);
+    }
   }
 
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: Call the server to post the status
+    let sessionsDao = this.daoFactory.getSessionsDao();
+    if ((await sessionsDao.checkToken(token)) === null) {
+      throw new Error("Bad Request");
+    } else {
+      let storyDao = this.daoFactory.getStoryDao();
+      let feedDao = this.daoFactory.getFeedDao();
+      storyDao.postStatusToStory(newStatus);
+      feedDao.postStatusToFeed(newStatus);
+      return;
+    }
   }
 }
