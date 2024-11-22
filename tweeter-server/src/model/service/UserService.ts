@@ -27,7 +27,7 @@ export class UserService {
       }
 
       let sessionDao = this.daoFactory.getSessionsDao();
-      let authToken = await sessionDao.makeNewSession();
+      let authToken = await sessionDao.makeNewSession(alias);
       return [retrievedUser, authToken];
     } else {
       throw new Error("Bad Request");
@@ -64,7 +64,7 @@ export class UserService {
 
     await usersDao.createUser(userDto, password);
     let sessionDao = this.daoFactory.getSessionsDao();
-    let authToken = await sessionDao.makeNewSession();
+    let authToken = await sessionDao.makeNewSession(alias);
     return [userDto, authToken];
   }
 
