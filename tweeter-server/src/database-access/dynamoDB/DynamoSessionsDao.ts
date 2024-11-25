@@ -15,7 +15,7 @@ export default class DynamoSessionsDao extends SessionsDao {
   readonly tableName = "sessions";
   readonly tokenAttr = "token";
   readonly aliasAttr = "alias";
-  readonly timestampAttr = "timestamp";
+  readonly timestampAttr = "mytimestamp";
 
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
@@ -44,7 +44,7 @@ export default class DynamoSessionsDao extends SessionsDao {
         return Item[this.aliasAttr];
       }
     } catch (error) {
-      throw new Error("Server Error check token");
+      throw new Error("[Server Error] check token " + error);
     }
   }
 
@@ -68,7 +68,7 @@ export default class DynamoSessionsDao extends SessionsDao {
         timestamp: currTime,
       };
     } catch (error) {
-      throw new Error("Server Error Create session");
+      throw new Error("[Server Error] Create session");
     }
   }
 
@@ -83,7 +83,7 @@ export default class DynamoSessionsDao extends SessionsDao {
 
       await this.client.send(new DeleteCommand(params));
     } catch (error) {
-      throw new Error("Server Error delete session");
+      throw new Error("[Server Error] delete session " + error);
     }
   }
 
@@ -99,7 +99,7 @@ export default class DynamoSessionsDao extends SessionsDao {
       };
       await this.client.send(new UpdateCommand(params));
     } catch (error) {
-      throw new Error("Server Error reseting session timestamp");
+      throw new Error("[Server Error] reseting session timestamp " + error);
     }
   }
 }

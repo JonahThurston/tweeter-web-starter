@@ -41,11 +41,11 @@ export default class DynamoFeedDao extends FeedDao {
           };
           await this.client.send(new PutCommand(params));
         } catch (error) {
-          throw new Error("Server Error Make feed item");
+          throw new Error("[Server Error] Make feed item " + error);
         }
       }
     } catch (error) {
-      throw new Error("Server Error posting status to feeds");
+      throw new Error("[Server Error] posting status to feeds " + error);
     }
   }
 
@@ -91,7 +91,7 @@ export default class DynamoFeedDao extends FeedDao {
 
       return [statuses, hasMorePages];
     } catch (error) {
-      throw new Error("Server Error get page of followees");
+      throw new Error("[Server Error] get page of followees " + error);
     }
   }
 }

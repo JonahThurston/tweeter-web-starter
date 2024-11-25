@@ -39,7 +39,7 @@ export default class DynamoUsersDao extends UsersDao {
         return bcrypt.compareSync(password, retrievedPassword);
       }
     } catch (error) {
-      throw new Error("Server Error check user password");
+      throw new Error("[Server Error] check user password");
     }
   }
 
@@ -64,7 +64,7 @@ export default class DynamoUsersDao extends UsersDao {
         };
       }
     } catch (error) {
-      throw new Error("Server Error get user");
+      throw new Error("[Server Error] get user");
     }
   }
 
@@ -83,9 +83,10 @@ export default class DynamoUsersDao extends UsersDao {
         },
       };
 
+      console.log(params);
       await this.client.send(new PutCommand(params));
     } catch (error) {
-      throw new Error("Server Error Create User");
+      throw new Error("[Server Error] Create User");
     }
   }
 }

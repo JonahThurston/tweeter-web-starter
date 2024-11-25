@@ -60,7 +60,7 @@ export default class DynamoFollowsDao extends FollowsDao {
 
       return [items, hasMorePages];
     } catch (error) {
-      throw new Error("Server Error get page of followers");
+      throw new Error("[Server Error] get page of followers " + error);
     }
   }
 
@@ -106,7 +106,7 @@ export default class DynamoFollowsDao extends FollowsDao {
 
       return [items, hasMorePages];
     } catch (error) {
-      throw new Error("Server Error get page of followees");
+      throw new Error("[Server Error] get page of followees " + error);
     }
   }
 
@@ -146,7 +146,7 @@ export default class DynamoFollowsDao extends FollowsDao {
         return data.Items.length;
       }
     } catch (error) {
-      throw new Error("Server Error followee Count");
+      throw new Error("[Server Error] followee Count " + error);
     }
   }
 
@@ -168,7 +168,7 @@ export default class DynamoFollowsDao extends FollowsDao {
         return data.Items.length;
       }
     } catch (error) {
-      throw new Error("Server Error follower Count");
+      throw new Error("[Server Error] follower Count " + error);
     }
   }
 
@@ -187,7 +187,7 @@ export default class DynamoFollowsDao extends FollowsDao {
       };
       await this.client.send(new PutCommand(params));
     } catch (error) {
-      throw new Error("Server Error Make follow item");
+      throw new Error("[Server Error] Make follow item " + error);
     }
   }
 
@@ -213,7 +213,7 @@ export default class DynamoFollowsDao extends FollowsDao {
 
       return data.Items != undefined && data.Items.length > 0;
     } catch (error) {
-      throw new Error("Server Error get is follower status");
+      throw new Error("[Server Error] get is follower status " + error);
     }
   }
 
@@ -236,7 +236,7 @@ export default class DynamoFollowsDao extends FollowsDao {
 
       return followerAliases;
     } catch (error) {
-      throw new Error("Server Error getting all followers");
+      throw new Error("[Server Error] getting all followers " + error);
     }
   }
 }

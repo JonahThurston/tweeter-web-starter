@@ -34,7 +34,7 @@ export default class DynamoStoryDao extends StoryDao {
       };
       await this.client.send(new PutCommand(params));
     } catch (error) {
-      throw new Error("Server Error Make story item");
+      throw new Error("[Server Error] Make story item " + error);
     }
   }
 
@@ -80,7 +80,7 @@ export default class DynamoStoryDao extends StoryDao {
 
       return [statuses, hasMorePages];
     } catch (error) {
-      throw new Error("Server Error get page of followees");
+      throw new Error("[Server Error] get page of followees " + error);
     }
   }
 }

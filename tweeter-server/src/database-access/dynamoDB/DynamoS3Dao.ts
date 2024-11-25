@@ -24,7 +24,7 @@ export default class DynamoS3Dao extends S3Dao {
       await client.send(c);
       return `https://${BUCKET}.s3.${REGION}.amazonaws.com/image/${fileName}`;
     } catch (error) {
-      throw Error("Server Error s3 put image failed with: " + error);
+      throw Error("[Server Error] s3 put image failed with: " + error);
     }
   }
 }

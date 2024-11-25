@@ -23,14 +23,14 @@ export class UserService {
     if (correctPassword) {
       let retrievedUser = await usersDao.getUser(alias);
       if (retrievedUser === null) {
-        throw new Error("Bad Request");
+        throw new Error("[Bad Request] couldnt find user");
       }
 
       let sessionDao = this.daoFactory.getSessionsDao();
       let authToken = await sessionDao.makeNewSession(alias);
       return [retrievedUser, authToken];
     } else {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] incorrect password or alias");
     }
   }
 
@@ -48,7 +48,7 @@ export class UserService {
     let usersDao = this.daoFactory.getUsersDao();
     let retrievedUser = await usersDao.getUser(alias);
     if (retrievedUser != null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] alias taken");
     }
 
     let s3Dao = this.daoFactory.getS3Dao();
@@ -71,7 +71,7 @@ export class UserService {
   public async getUser(token: string, alias: string): Promise<UserDto | null> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let usersDao = this.daoFactory.getUsersDao();
       return await usersDao.getUser(alias);

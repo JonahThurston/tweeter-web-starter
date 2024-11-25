@@ -16,7 +16,7 @@ export class FollowService {
   ): Promise<[UserDto[], boolean]> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       return await followsDao.getPageOfFollowers(lastItem, userAlias, pageSize);
@@ -31,7 +31,7 @@ export class FollowService {
   ): Promise<[UserDto[], boolean]> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       return await followsDao.getPageOfFollowees(lastItem, userAlias, pageSize);
@@ -45,7 +45,7 @@ export class FollowService {
     let sessionsDao = this.daoFactory.getSessionsDao();
     let returnedAlias = await sessionsDao.checkToken(token);
     if (returnedAlias === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       await followsDao.deleteFollowItem(returnedAlias, userToUnfollow);
@@ -60,7 +60,7 @@ export class FollowService {
   public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       return await followsDao.followerCount(user);
@@ -70,7 +70,7 @@ export class FollowService {
   public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       return await followsDao.followeeCount(user);
@@ -84,7 +84,7 @@ export class FollowService {
     let sessionsDao = this.daoFactory.getSessionsDao();
     let returnedAlias = await sessionsDao.checkToken(token);
     if (returnedAlias === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       await followsDao.makeFollowItem(returnedAlias, userToFollow);
@@ -103,7 +103,7 @@ export class FollowService {
   ): Promise<boolean> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let followsDao = this.daoFactory.getFollowsDao();
       return await followsDao.getIsFollowerStatus(user, selectedUser);

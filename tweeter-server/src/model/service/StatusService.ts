@@ -16,7 +16,7 @@ export class StatusService {
   ): Promise<[StatusDto[], boolean]> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let feedDao = this.daoFactory.getFeedDao();
       return await feedDao.getPageOfItems(lastItem, userAlias, pageSize);
@@ -31,7 +31,7 @@ export class StatusService {
   ): Promise<[StatusDto[], boolean]> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let storyDao = this.daoFactory.getStoryDao();
       return await storyDao.getPageOfItems(lastItem, userAlias, pageSize);
@@ -41,7 +41,7 @@ export class StatusService {
   public async postStatus(token: string, newStatus: StatusDto): Promise<void> {
     let sessionsDao = this.daoFactory.getSessionsDao();
     if ((await sessionsDao.checkToken(token)) === null) {
-      throw new Error("Bad Request");
+      throw new Error("[Bad Request] expired token");
     } else {
       let storyDao = this.daoFactory.getStoryDao();
       let feedDao = this.daoFactory.getFeedDao();
