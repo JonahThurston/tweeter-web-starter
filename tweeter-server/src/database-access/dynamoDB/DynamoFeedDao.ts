@@ -9,7 +9,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import DynamoFollowsDao from "./DynamoFollowsDao";
 
 export default class DynamoFeedDao extends FeedDao {
-  readonly tableName = "story";
+  readonly tableName = "feed";
   readonly recieverAliasAttr = "reciever_alias";
   readonly authorAliasAttr = "author_alias";
   readonly timestampAttr = "timestamp";

@@ -87,7 +87,6 @@ export default class DynamoUsersDao extends UsersDao {
         },
       };
 
-      console.log(params);
       await this.client.send(new PutCommand(params));
     } catch (error) {
       throw new Error("[Server Error] Create User");

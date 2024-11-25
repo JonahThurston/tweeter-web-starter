@@ -45,7 +45,7 @@ export class StatusService {
   ): Promise<void> {
     let request: PostStatusRequest = {
       token: authToken.token,
-      newStatus: newStatus,
+      newStatus: newStatus.dto,
     };
     return await this.server.postStatus(request);
   }

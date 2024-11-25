@@ -39,32 +39,35 @@ export class UserService {
     lastName: string,
     alias: string,
     password: string,
-    userImageBytes: Uint8Array,
+    userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
+    console.log("starting register service, checking if user already exists");
     let usersDao = this.daoFactory.getUsersDao();
     let retrievedUser = await usersDao.getUser(alias);
     if (retrievedUser != null) {
       throw new Error("[Bad Request] alias taken");
     }
 
+    console.log("uploading picture");
     let s3Dao = this.daoFactory.getS3Dao();
     let fileName = alias + imageFileExtension;
-    let imageURL = await s3Dao.uploadPicture(fileName, imageStringBase64);
+    let imageURL = await s3Dao.uploadPicture(fileName, userImageBytes);
 
+    console.log("creating user");
     let userDto: UserDto = {
       firstName: firstName,
       lastName: lastName,
       alias: alias,
       imageUrl: imageURL,
     };
-
     await usersDao.createUser(userDto, password);
+
+    console.log("authtokening");
     let sessionDao = this.daoFactory.getSessionsDao();
     let authToken = await sessionDao.makeNewSession(alias);
+
+    console.log("done register");
     return [userDto, authToken];
   }
 

@@ -82,7 +82,6 @@ export default class DynamoFollowsDao extends FollowsDao {
           ":fol": userAlias,
         },
         TableName: this.tableName,
-        IndexName: this.indexName,
         Limit: pageSize,
         ExclusiveStartKey:
           lastFolloweeHandle === undefined
@@ -141,7 +140,6 @@ export default class DynamoFollowsDao extends FollowsDao {
           ":fol": userToCountFollowees.alias,
         },
         TableName: this.tableName,
-        IndexName: this.indexName,
       };
 
       const data = await this.client.send(new QueryCommand(params));
