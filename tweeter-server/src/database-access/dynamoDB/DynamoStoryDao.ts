@@ -2,7 +2,6 @@ import { StatusDto } from "tweeter-shared";
 import { StoryDao } from "../interfaces/StoryDao";
 
 import {
-  DeleteCommand,
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
@@ -21,7 +20,22 @@ export default class DynamoStoryDao extends StoryDao {
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
   public async postStatusToStory(post: StatusDto): Promise<void> {
-    throw new Error("Method not implemented.");
+    try {
+      const params = {
+        TableName: this.tableName,
+        Item: {
+          [this.authorAliasAttr]: post.user.alias,
+          [this.timestampAttr]: post.timestamp,
+          [this.postAttr]: post.post,
+          [this.firstNameAttr]: post.user.firstName,
+          [this.lastNameAttr]: post.user.lastName,
+          [this.imageUrlAttr]: post.user.imageUrl,
+        },
+      };
+      await this.client.send(new PutCommand(params));
+    } catch (error) {
+      throw new Error("Server Error Make story item");
+    }
   }
 
   public async getPageOfItems(
@@ -42,8 +56,10 @@ export default class DynamoStoryDao extends StoryDao {
           lastPosterHandle === undefined
             ? undefined
             : {
-                [this.authorAliasAttr]: userAlias,
+                [this.authorAliasAttr]: lastItem?.user.alias,
+                [this.timestampAttr]: lastItem?.timestamp,
               },
+        ScanIndexForward: false,
       };
       const data = await this.client.send(new QueryCommand(params));
       const hasMorePages = data.LastEvaluatedKey !== undefined;

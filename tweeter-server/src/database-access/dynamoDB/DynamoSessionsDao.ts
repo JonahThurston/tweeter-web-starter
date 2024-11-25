@@ -6,6 +6,7 @@ import {
   GetCommand,
   PutCommand,
   DeleteCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { v4 as uuidv4 } from "uuid";
@@ -39,6 +40,7 @@ export default class DynamoSessionsDao extends SessionsDao {
         await this.deleteSession(token);
         return null;
       } else {
+        await this.resetTimestamp(token);
         return Item[this.aliasAttr];
       }
     } catch (error) {
@@ -82,6 +84,22 @@ export default class DynamoSessionsDao extends SessionsDao {
       await this.client.send(new DeleteCommand(params));
     } catch (error) {
       throw new Error("Server Error delete session");
+    }
+  }
+
+  private async resetTimestamp(token: string): Promise<void> {
+    try {
+      const params = {
+        TableName: this.tableName,
+        Key: {
+          [this.tokenAttr]: token,
+        },
+        ExpressionAttributeValues: { ":inc": Date.now() },
+        UpdateExpression: "SET " + this.timestampAttr + " = :inc",
+      };
+      await this.client.send(new UpdateCommand(params));
+    } catch (error) {
+      throw new Error("Server Error reseting session timestamp");
     }
   }
 }

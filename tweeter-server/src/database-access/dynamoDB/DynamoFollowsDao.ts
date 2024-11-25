@@ -216,4 +216,27 @@ export default class DynamoFollowsDao extends FollowsDao {
       throw new Error("Server Error get is follower status");
     }
   }
+
+  public async getAllFollowers(alias: string): Promise<string[]> {
+    try {
+      const params = {
+        KeyConditionExpression: this.followeeHandleAttr + " = :fol",
+        ExpressionAttributeValues: {
+          ":fol": alias,
+        },
+        TableName: this.tableName,
+        IndexName: this.indexName,
+      };
+
+      let followerAliases: string[] = [];
+      const data = await this.client.send(new QueryCommand(params));
+      data.Items?.forEach((item) => {
+        followerAliases.push(item[this.followerHandleAttr]);
+      });
+
+      return followerAliases;
+    } catch (error) {
+      throw new Error("Server Error getting all followers");
+    }
+  }
 }
