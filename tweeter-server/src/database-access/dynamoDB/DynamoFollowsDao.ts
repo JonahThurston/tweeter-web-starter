@@ -16,7 +16,12 @@ export default class DynamoFollowsDao extends FollowsDao {
   readonly followerHandleAttr = "follower_handle";
   readonly followeeHandleAttr = "followee_handle";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client;
+
+  public constructor(client: DynamoDBDocumentClient) {
+    super();
+    this.client = client;
+  }
 
   public async getPageOfFollowers(
     lastItem: UserDto | null,
@@ -49,7 +54,7 @@ export default class DynamoFollowsDao extends FollowsDao {
         followerAliases.push(item[this.followeeHandleAttr])
       );
 
-      let userDao = new DynamoUsersDao();
+      let userDao = new DynamoUsersDao(this.client);
       const items: UserDto[] = [];
       for (const alias of followerAliases) {
         let retrievedUser = await userDao.getUser(alias);
@@ -95,7 +100,7 @@ export default class DynamoFollowsDao extends FollowsDao {
         followeeAliases.push(item[this.followeeHandleAttr])
       );
 
-      let userDao = new DynamoUsersDao();
+      let userDao = new DynamoUsersDao(this.client);
       const items: UserDto[] = [];
       for (const alias of followeeAliases) {
         let retrievedUser = await userDao.getUser(alias);

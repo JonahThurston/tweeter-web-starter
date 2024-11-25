@@ -18,11 +18,16 @@ export default class DynamoFeedDao extends FeedDao {
   readonly lastNameAttr = "lastName";
   readonly imageUrlAttr = "imageUrl";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client;
+
+  public constructor(client: DynamoDBDocumentClient) {
+    super();
+    this.client = client;
+  }
 
   public async postStatusToFeed(post: StatusDto): Promise<void> {
     const posterAlias = post.user.alias;
-    let followsDao = new DynamoFollowsDao();
+    let followsDao = new DynamoFollowsDao(this.client);
     try {
       let followerList = await followsDao.getAllFollowers(posterAlias);
       for (const followerAlias of followerList) {

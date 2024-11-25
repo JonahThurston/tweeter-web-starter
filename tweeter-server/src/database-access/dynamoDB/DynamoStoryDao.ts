@@ -17,7 +17,11 @@ export default class DynamoStoryDao extends StoryDao {
   readonly lastNameAttr = "lastName";
   readonly imageUrlAttr = "imageUrl";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client;
+  public constructor(client: DynamoDBDocumentClient) {
+    super();
+    this.client = client;
+  }
 
   public async postStatusToStory(post: StatusDto): Promise<void> {
     try {

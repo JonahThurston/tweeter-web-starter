@@ -1,3 +1,5 @@
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DaoFactory } from "../interfaces/DaoFactory";
 import { FeedDao } from "../interfaces/FeedDao";
 import { FollowsDao } from "../interfaces/FollowsDao";
@@ -13,20 +15,27 @@ import DynamoStoryDao from "./DynamoStoryDao";
 import DynamoUsersDao from "./DynamoUsersDao";
 
 export default class extends DaoFactory {
+  private client: DynamoDBDocumentClient;
+
+  public constructor() {
+    super();
+    this.client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  }
+
   getFollowsDao(): FollowsDao {
-    return new DynamoFollowsDao();
+    return new DynamoFollowsDao(this.client);
   }
   getStoryDao(): StoryDao {
-    return new DynamoStoryDao();
+    return new DynamoStoryDao(this.client);
   }
   getFeedDao(): FeedDao {
-    return new DynamoFeedDao();
+    return new DynamoFeedDao(this.client);
   }
   getSessionsDao(): SessionsDao {
-    return new DynamoSessionsDao();
+    return new DynamoSessionsDao(this.client);
   }
   getUsersDao(): UsersDao {
-    return new DynamoUsersDao();
+    return new DynamoUsersDao(this.client);
   }
   getS3Dao(): S3Dao {
     return new DynamoS3Dao();

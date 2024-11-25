@@ -1,3 +1,5 @@
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import DynamoFactory from "./database-access/dynamoDB/DynamoFactory";
 import DynamoSessionsDao from "./database-access/dynamoDB/DynamoSessionsDao";
 import DynamoStoryDao from "./database-access/dynamoDB/DynamoStoryDao";
@@ -9,7 +11,8 @@ import { UserService } from "./model/service/UserService";
 
 class Main {
   async Run() {
-    let storyDao = new DynamoStoryDao();
+    let client = DynamoDBDocumentClient.from(new DynamoDBClient());
+    let storyDao = new DynamoStoryDao(client);
     console.log(await storyDao.getPageOfItems(null, "b", 10));
   }
 }

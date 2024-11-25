@@ -17,7 +17,11 @@ export default class DynamoUsersDao extends UsersDao {
   readonly passwordAttr = "password";
   readonly imageUrlAttr = "image_url";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client;
+  public constructor(client: DynamoDBDocumentClient) {
+    super();
+    this.client = client;
+  }
 
   public async checkUserPassword(
     alias: string,

@@ -17,7 +17,11 @@ export default class DynamoSessionsDao extends SessionsDao {
   readonly aliasAttr = "alias";
   readonly timestampAttr = "mytimestamp";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client;
+  public constructor(client: DynamoDBDocumentClient) {
+    super();
+    this.client = client;
+  }
 
   public async checkToken(token: string): Promise<string | null> {
     try {
