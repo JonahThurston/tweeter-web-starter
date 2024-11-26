@@ -14,19 +14,24 @@ import DynamoFeedDao from "./database-access/dynamoDB/DynamoFeedDao";
 
 class Main {
   async Run() {
-    //let client = DynamoDBDocumentClient.from(new DynamoDBClient());
-    let service = new StatusService(new DynamoFactory());
+    let client = DynamoDBDocumentClient.from(new DynamoDBClient());
+    let service = new DynamoFeedDao(client);
     console.log(
-      await service.postStatus("13a07e0b-616b-4124-9511-3be1e4d32f2d", {
-        post: "post3",
-        user: {
-          firstName: "m",
-          lastName: "m",
-          alias: "m",
-          imageUrl: "image",
+      await service.getPageOfItems(
+        {
+          post: "post 1",
+          timestamp: 1732580013706,
+          user: {
+            alias: "@marcus",
+            firstName: "marcus",
+            lastName: "thurston",
+            imageUrl:
+              "https://tweeter-user-profile-pics.s3.us-west-1.amazonaws.com/image/@marcuspng",
+          },
         },
-        timestamp: 100,
-      })
+        "@jonah",
+        10
+      )
     );
   }
 }

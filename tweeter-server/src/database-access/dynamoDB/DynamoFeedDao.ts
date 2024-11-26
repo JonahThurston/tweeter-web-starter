@@ -12,7 +12,7 @@ export default class DynamoFeedDao extends FeedDao {
   readonly tableName = "feed";
   readonly recieverAliasAttr = "reciever_alias";
   readonly authorAliasAttr = "author_alias";
-  readonly timestampAttr = "timestamp";
+  readonly timestampAttr = "mytimestamp";
   readonly postAttr = "post";
   readonly firstNameAttr = "firstName";
   readonly lastNameAttr = "lastName";

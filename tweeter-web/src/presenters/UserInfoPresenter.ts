@@ -99,11 +99,13 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
       if (currentUser === displayedUser) {
         this._isFollower = false;
       } else {
-        this._isFollower = await this.followService.getIsFollowerStatus(
+        let result = await this.followService.getIsFollowerStatus(
           authToken!,
           currentUser!,
           displayedUser!
         );
+        console.log(result);
+        this._isFollower = result;
       }
     }, "determine follower status");
   }

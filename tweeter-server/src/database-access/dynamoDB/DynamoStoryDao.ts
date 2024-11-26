@@ -11,7 +11,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 export default class DynamoStoryDao extends StoryDao {
   readonly tableName = "story";
   readonly authorAliasAttr = "author_alias";
-  readonly timestampAttr = "timestamp";
+  readonly timestampAttr = "mytimestamp";
   readonly postAttr = "post";
   readonly firstNameAttr = "firstName";
   readonly lastNameAttr = "lastName";

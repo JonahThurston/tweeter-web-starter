@@ -93,8 +93,10 @@ export class FollowService {
     let request: GetFollowerStatusRequest = {
       token: authToken.token,
       user: user.dto,
-      selectedUser: selectedUser,
+      selectedUser: selectedUser.dto,
     };
-    return await this.server.getFollowerStatus(request);
+    let result = await this.server.getFollowerStatus(request);
+    //console.log(result);
+    return result;
   }
 }
